@@ -198,9 +198,7 @@ def handle_new_image(user, path, job_id, photo=None):
             photo._get_blurhash()
             elapsed = (datetime.datetime.now() - start).total_seconds()
             util.logger.info(
-                "job {}: get blurhash: {}, elapsed: {}".format(
-                    job_id, path, elapsed
-                )
+                "job {}: get blurhash: {}, elapsed: {}".format(job_id, path, elapsed)
             )
             photo._recreate_search_captions()
             elapsed = (datetime.datetime.now() - start).total_seconds()

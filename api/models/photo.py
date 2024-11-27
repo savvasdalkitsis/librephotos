@@ -4,10 +4,10 @@ import os
 from fractions import Fraction
 from io import BytesIO
 
+import blurhash
 import numpy as np
 import PIL
 import requests
-import blurhash
 from django.contrib.postgres.fields import ArrayField
 from django.core.files.base import ContentFile
 from django.db import models
@@ -843,7 +843,9 @@ class Photo(models.Model):
         if self.blurhash:
             return
         try:
-            hash = blurhash.encode(self.square_thumbnail_small.path, x_components=4, y_components=4)
+            hash = blurhash.encode(
+                self.square_thumbnail_small.path, x_components=4, y_components=4
+            )
             self.blurhash = hash
             self.save()
         except Exception:
@@ -886,7 +888,7 @@ class Photo(models.Model):
         return obj.main_file.embedded_media
 
     def __str__(self):
-        main_file_path = self.main_file.path if self.main_file is not None else "No main file"
-        return (
-            "{} - {} - {}".format(self.image_hash, self.owner, main_file_path)
+        main_file_path = (
+            self.main_file.path if self.main_file is not None else "No main file"
         )
+        return "{} - {} - {}".format(self.image_hash, self.owner, main_file_path)
