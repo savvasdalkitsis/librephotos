@@ -7,6 +7,7 @@ from io import BytesIO
 import numpy as np
 import PIL
 import requests
+import blurhash
 from django.contrib.postgres.fields import ArrayField
 from django.core.files.base import ContentFile
 from django.db import models
@@ -73,6 +74,7 @@ class Photo(models.Model):
     captions_json = models.JSONField(blank=True, null=True, db_index=True)
 
     dominant_color = models.TextField(blank=True, null=True)
+    blurhash = models.TextField(blank=True, null=True)
 
     search_captions = models.TextField(blank=True, null=True, db_index=True)
     search_location = models.TextField(blank=True, null=True, db_index=True)
@@ -835,6 +837,17 @@ class Photo(models.Model):
             self.save()
         except Exception:
             logger.info("Cannot calculate dominant color {} object".format(self))
+
+    def _get_blurhash(self, palette_size=16):
+        # Skip if it's already calculated
+        if self.blurhash:
+            return
+        try:
+            hash = blurhash.encode(self.square_thumbnail_small.path, x_components=4, y_components=4)
+            self.blurhash = hash
+            self.save()
+        except Exception:
+            logger.info("Cannot calculate blurhash {} object".format(self))
 
     def manual_delete(self):
         for file in self.files.all():

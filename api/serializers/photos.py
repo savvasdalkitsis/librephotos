@@ -11,6 +11,7 @@ from api.serializers.simple import SimpleUserSerializer
 class PhotoSummarySerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     dominantColor = serializers.SerializerMethodField()
+    blurhash = serializers.SerializerMethodField()
     aspectRatio = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()
@@ -25,6 +26,7 @@ class PhotoSummarySerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "dominantColor",
+            "blurhash",
             "url",
             "location",
             "date",
@@ -81,6 +83,12 @@ class PhotoSummarySerializer(serializers.ModelSerializer):
         if obj.dominant_color:
             dominant_color = obj.dominant_color[1:-1]
             return "#%02x%02x%02x" % tuple(map(int, dominant_color.split(", ")))
+        else:
+            return ""
+
+    def get_blurhash(self, obj) -> str:
+        if obj.blurhash:
+            return obj.blurhash
         else:
             return ""
 

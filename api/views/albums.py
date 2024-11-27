@@ -364,6 +364,7 @@ class AlbumDateViewSet(viewsets.ModelViewSet):
                 "main_file",
                 "search_location",
                 "dominant_color",
+                "blurhash",
                 "public",
                 "rating",
                 "hidden",
